@@ -1,0 +1,61 @@
+import csv
+import os
+
+csvpath = os.path.join("pypoll","resources", "Election_Data.csv")
+
+total=0
+candidate=[]
+unique_candidate=[]
+vote_count=[]
+vote_percent=[]
+
+
+with open(csvpath) as csvfile:
+    csvreader=csv.reader(csvfile,delimiter=",")
+    csv_header=next(csvreader)
+
+    for row in csvreader:
+        #Total votes
+        total=total+1
+
+        candidate.append(row[2])
+   
+    #A complete list of candidates who received votes
+    #The total number of votes each candidate won
+    for x in set(candidate):
+        unique_candidate.append(x)
+        v=candidate.count(x)
+        vote_count.append(v)
+        p=round((v/total)*100,2)
+        vote_percent.append(p)
+    
+    #The winner of the election based on popular vote   
+    winner_count=max(vote_count)
+    winner=unique_candidate[vote_count.index(winner_count)]
+
+#Print results in terminal
+print('Election Results')
+print('--------------------------------')
+print(f'Total Votes: {total}')
+print('--------------------------------')
+
+#The winner of the election based on popular vote   
+for i in range(len(unique_candidate)):
+    print(f'{unique_candidate[i]}: {vote_percent[i]}% {vote_count[i]}')
+print('--------------------------------')
+print(f'Winner: {winner}')
+print('--------------------------------')
+
+#Write results to text file
+pypoll_file=os.path.join("pypoll","Pypoll_analysis.txt")
+
+with open(pypoll_file, "w") as file:
+    file.write('Election Results')
+    file.write('\n------------------------------------')
+    file.write(f'\nTotal Votes: {total}')
+    file.write('\n------------------------------------')
+    for i in range (len(unique_candidate)):
+        file.write(f'\n{unique_candidate[i]}: {vote_percent[i]}% {vote_count[i]}')
+    file.write('\n------------------------------------')
+    file.write(f'\nWinner: {winner}')
+    file.write('\n------------------------------------')
